@@ -48,6 +48,7 @@ public class ImagesArrayAdapter extends ArrayAdapter<String> {
 
         Picasso.with(viewHolder.imageView.getContext())
                 .load(item)
+                .fit()
                 .placeholder(R.mipmap.ic_launcher)
                 .into(viewHolder.imageView);
 

@@ -61,9 +61,7 @@ public class MainActivity extends AppCompatActivity {
         gridView.setOnScrollListener(new InfiniteScrollListener() {
             @Override
             public void onLastItemShown() {
-                onNewItemsLoadStart();
                 dataSource.addNMoreElements(ImageDataSource.PAGINATION_SIZE);
-                onNewItemsLoadEnd();
             }
         });
     }
