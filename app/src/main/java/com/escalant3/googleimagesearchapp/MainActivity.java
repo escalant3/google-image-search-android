@@ -5,30 +5,27 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.widget.GridView;
-
-import com.escalant3.googleimagesearchapp.datasources.ImageDataSource;
-import com.escalant3.googleimagesearchapp.listeners.InfiniteScrollListener;
-
-import java.util.ArrayList;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
     private SearchView searchView;
-    private GridView gridView;
-    private ImageDataSource dataSource;
-
-    ArrayList<String> items = new ArrayList<>();
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        dataSource = new ImageDataSource(this, items);
-
+        configureToolbar();
         loadSearchWidget();
-        loadGridView();
+    }
+
+    private void configureToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        setTitle(getString(R.string.main_title));
     }
 
     private void loadSearchWidget() {
@@ -36,33 +33,23 @@ public class MainActivity extends AppCompatActivity {
         searchView = (SearchView) findViewById(R.id.search);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                dataSource.loadInitialData(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                dataSource.loadInitialData(null);
-                return false;
-            }
-        });
     }
 
-    private void loadGridView() {
-        gridView = (GridView) findViewById(R.id.grid_view);
 
-        // Attach gridView with ImageAdapter
-        gridView.setAdapter(dataSource.getAdapter());
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
-        gridView.setOnScrollListener(new InfiniteScrollListener() {
-            @Override
-            public void onLastItemShown() {
-                dataSource.addNMoreElements(ImageDataSource.PAGINATION_SIZE);
-            }
-        });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

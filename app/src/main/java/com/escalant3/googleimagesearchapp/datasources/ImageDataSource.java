@@ -2,11 +2,13 @@ package com.escalant3.googleimagesearchapp.datasources;
 
 
 import android.content.Context;
+import android.provider.SearchRecentSuggestions;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.escalant3.googleimagesearchapp.R;
 import com.escalant3.googleimagesearchapp.adapters.ImagesArrayAdapter;
+import com.escalant3.googleimagesearchapp.contentproviders.GoogleImagesSearchProvider;
 import com.escalant3.googleimagesearchapp.deserializers.GoogleImagesDeserializer;
 import com.escalant3.googleimagesearchapp.models.GoogleImagesResponse;
 import com.escalant3.googleimagesearchapp.services.GoogleImageSearchService;
@@ -65,6 +67,11 @@ public class ImageDataSource {
         if (loading || noMoreDataToShow || counter >= MAX_GOOGLE_IMAGES_RESULTS) {
             return;
         }
+
+        // Add query to recent searches
+        SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this.context,
+                GoogleImagesSearchProvider.AUTHORITY, GoogleImagesSearchProvider.MODE);
+        suggestions.saveRecentQuery(query, null);
 
         loading = true;
 
