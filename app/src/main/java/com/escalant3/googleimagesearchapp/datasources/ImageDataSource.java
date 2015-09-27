@@ -15,7 +15,7 @@ import com.escalant3.googleimagesearchapp.services.GoogleImageSearchService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -40,13 +40,14 @@ public class ImageDataSource {
     private String query;
 
     private Context context;
-    private List<String> items;
+    private ArrayList<String> items;
     private ImagesArrayAdapter adapter;
     private GoogleImageSearchService service;
 
-    public ImageDataSource(Context context, List<String> items) {
-        this.items = items;
+    public ImageDataSource(Context context) {
+        this.items = new ArrayList<>();
         this.context = context;
+
         adapter = new ImagesArrayAdapter(context, items) {
             @Override
             public void onLastElementVisible() {
@@ -58,6 +59,14 @@ public class ImageDataSource {
 
     public ArrayAdapter getAdapter() {
         return adapter;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public ArrayList<String> getItems() {
+        return items;
     }
 
     public void loadInitialData(final String query) {
@@ -77,6 +86,22 @@ public class ImageDataSource {
         adapter.notifyDataSetChanged();
     }
 
+    public void loadWithPreloadedData(final String query, ArrayList<String> initialItems) {
+        this.items.clear();
+        this.query = query;
+
+        addItems(initialItems);
+
+        adapter.notifyDataSetChanged();
+    }
+
+    private void addItems(ArrayList<String> newItems) {
+        for (String imageUrl: newItems) {
+            this.items.add(imageUrl);
+            counter++;
+        }
+    }
+
     public void addNMoreElements(final int n) {
         if (loading || noMoreDataToShow || counter >= MAX_GOOGLE_IMAGES_RESULTS) {
             return;
@@ -91,10 +116,7 @@ public class ImageDataSource {
                 // This will never happen with the Google Image Search API (limited to 64 results)
                 int currentCounter = counter;
 
-                for (String imageUrl : googleImagesResponse.getResults()) {
-                    items.add(imageUrl);
-                    counter++;
-                }
+                addItems(googleImagesResponse.getResults());
 
                 if (currentCounter == counter) {
                     noMoreDataToShow = true;

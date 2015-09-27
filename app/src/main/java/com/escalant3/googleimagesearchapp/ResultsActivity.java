@@ -19,23 +19,31 @@ public class ResultsActivity extends AppCompatActivity {
 
     private ImageDataSource dataSource;
 
-    ArrayList<String> items = new ArrayList<>();
+    private static final String RESULTS_STRING_ARRAY_KEY = "results_array";
+    private static final String QUERY_STRING_KEY = "query";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
-        dataSource = new ImageDataSource(this, items);
+        dataSource = new ImageDataSource(this);
 
         loadGridView();
 
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            configureToolbar(query);
-            dataSource.loadInitialData(query);
+            if (savedInstanceState == null) {
+                dataSource.loadInitialData(intent.getStringExtra(SearchManager.QUERY));
+            }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        configureToolbar(dataSource.getQuery());
     }
 
     private void configureToolbar(String query) {
@@ -62,5 +70,20 @@ public class ResultsActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putStringArrayList(RESULTS_STRING_ARRAY_KEY, dataSource.getItems());
+        savedInstanceState.putString(QUERY_STRING_KEY, dataSource.getQuery());
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        ArrayList<String> items = savedInstanceState.getStringArrayList(RESULTS_STRING_ARRAY_KEY);
+        String query = savedInstanceState.getString(QUERY_STRING_KEY);
+        dataSource.loadWithPreloadedData(query, items);
     }
 }
