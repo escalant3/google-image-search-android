@@ -48,7 +48,7 @@ public class ResultsActivity extends AppCompatActivity {
     private void loadGridView() {
         gridView = (GridView) findViewById(R.id.grid_view);
 
-        // Attach gridView with ImageAdapter
+        // Attach gridView to ImageAdapter
         gridView.setAdapter(dataSource.getAdapter());
     }
 

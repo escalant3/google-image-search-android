@@ -25,11 +25,16 @@ import retrofit.converter.GsonConverter;
 
 public class ImageDataSource {
 
-    public final static int PAGINATION_SIZE = 8;
+    private final static int PAGINATION_SIZE = 8;
     private final static int MAX_GOOGLE_IMAGES_RESULTS = 64;
 
+    // A counter to keep track of the pagination (the API returns a max of 8 results per request)
     private int counter;
+
+    // Don't request more images if we are loading
     private boolean loading = false;
+
+    // Once we hit the max number of images(64) that Google allows, lock the data source
     private boolean noMoreDataToShow = false;
 
     private String query;
@@ -63,6 +68,10 @@ public class ImageDataSource {
 
         if (query != null) {
             addNMoreElements(PAGINATION_SIZE);
+            // Add query to recent searches
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this.context,
+                    GoogleImagesSearchProvider.AUTHORITY, GoogleImagesSearchProvider.MODE);
+            suggestions.saveRecentQuery(query, null);
         }
 
         adapter.notifyDataSetChanged();
@@ -73,16 +82,13 @@ public class ImageDataSource {
             return;
         }
 
-        // Add query to recent searches
-        SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this.context,
-                GoogleImagesSearchProvider.AUTHORITY, GoogleImagesSearchProvider.MODE);
-        suggestions.saveRecentQuery(query, null);
-
         loading = true;
 
         service.listImages(query, counter, new Callback<GoogleImagesResponse>() {
             @Override
             public void success(GoogleImagesResponse googleImagesResponse, Response response) {
+                // We control hypothetically reaching the end of the results
+                // This will never happen with the Google Image Search API (limited to 64 results)
                 int currentCounter = counter;
 
                 for (String imageUrl : googleImagesResponse.getResults()) {
