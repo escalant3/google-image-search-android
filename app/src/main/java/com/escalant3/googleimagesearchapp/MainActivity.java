@@ -3,11 +3,14 @@ package com.escalant3.googleimagesearchapp;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.escalant3.googleimagesearchapp.contentproviders.GoogleImagesSearchProvider;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private void configureToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setTitle(getString(R.string.main_title));
+        setTitle(null);
     }
 
     private void loadSearchWidget() {
@@ -46,7 +49,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_clear_search_history) {
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                    GoogleImagesSearchProvider.AUTHORITY, GoogleImagesSearchProvider.MODE);
+            suggestions.clearHistory();
             return true;
         }
 

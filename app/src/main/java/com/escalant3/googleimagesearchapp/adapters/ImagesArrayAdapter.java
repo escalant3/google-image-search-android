@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ImagesArrayAdapter extends ArrayAdapter<String> {
+public abstract class ImagesArrayAdapter extends ArrayAdapter<String> {
 
     private static class ViewHolder {
         ImageView imageView;
@@ -28,6 +28,10 @@ public class ImagesArrayAdapter extends ArrayAdapter<String> {
         String item = getItem(position);
         ViewHolder viewHolder;
 
+        if (position == getCount() - 1) {
+            onLastElementVisible();
+        }
+
         if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.image_item, viewGroup, false);
@@ -37,8 +41,8 @@ public class ImagesArrayAdapter extends ArrayAdapter<String> {
             // The GridView automatically resizes width to fill columns.
             // Use that width as the height to have perfect dynamic squares
             GridView gv = (GridView) viewGroup;
-            int columWidth = gv.getWidth() / gv.getNumColumns();
-            convertView.setLayoutParams(new GridView.LayoutParams(GridView.AUTO_FIT, columWidth));
+            int columnWidth = gv.getWidth() / gv.getNumColumns();
+            convertView.setLayoutParams(new GridView.LayoutParams(GridView.AUTO_FIT, columnWidth));
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
@@ -54,4 +58,6 @@ public class ImagesArrayAdapter extends ArrayAdapter<String> {
 
         return convertView;
     }
+
+    public abstract void onLastElementVisible();
 }

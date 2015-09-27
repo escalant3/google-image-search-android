@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
 
 import com.escalant3.googleimagesearchapp.datasources.ImageDataSource;
-import com.escalant3.googleimagesearchapp.listeners.InfiniteScrollListener;
 
 import java.util.ArrayList;
 
@@ -52,13 +50,6 @@ public class ResultsActivity extends AppCompatActivity {
 
         // Attach gridView with ImageAdapter
         gridView.setAdapter(dataSource.getAdapter());
-
-        gridView.setOnScrollListener(new InfiniteScrollListener() {
-            @Override
-            public void onLastItemShown() {
-                dataSource.addNMoreElements(ImageDataSource.PAGINATION_SIZE);
-            }
-        });
     }
 
     @Override

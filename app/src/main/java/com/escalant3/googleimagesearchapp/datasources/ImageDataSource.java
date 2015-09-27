@@ -42,7 +42,12 @@ public class ImageDataSource {
     public ImageDataSource(Context context, List<String> items) {
         this.items = items;
         this.context = context;
-        adapter = new ImagesArrayAdapter(context, items);
+        adapter = new ImagesArrayAdapter(context, items) {
+            @Override
+            public void onLastElementVisible() {
+                addNMoreElements(ImageDataSource.PAGINATION_SIZE);
+            }
+        };
         service = getGoogleImageSearchService();
     }
 

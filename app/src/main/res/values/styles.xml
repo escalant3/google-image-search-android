@@ -6,9 +6,9 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
-        <item name="colorPrimary">#673AB7</item>
-        <item name="colorPrimaryDark">#512DA8</item>
-        <item name="colorAccent">#536DFE</item>
+        <item name="colorPrimary">#009688</item>
+        <item name="colorPrimaryDark">#00796B</item>
+        <item name="colorAccent">#00BCD4</item>
 
         <item name="android:windowContentOverlay">@null</item>
     </style>
