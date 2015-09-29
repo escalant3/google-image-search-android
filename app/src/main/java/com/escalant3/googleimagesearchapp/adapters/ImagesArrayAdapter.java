@@ -53,7 +53,7 @@ public abstract class ImagesArrayAdapter extends ArrayAdapter<String> {
         Picasso.with(viewHolder.imageView.getContext())
                 .load(item)
                 .fit()
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.drawable.ic_loading)
                 .into(viewHolder.imageView);
 
         return convertView;

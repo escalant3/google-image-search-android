@@ -15,17 +15,21 @@ import java.util.List;
 
 public class GoogleImagesDeserializer implements JsonDeserializer<GoogleImagesResponse> {
 
+    private static final String RESPONSE_DATA_KEY = "responseData";
+    private static final String RESULTS_KEY = "results";
+    private static final String THUMB_KEY = "tbUrl";
+
     @Override
     public GoogleImagesResponse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject main = json.getAsJsonObject();
 
-        JsonObject data = main.get("responseData").getAsJsonObject();
-        JsonArray results = data.get("results").getAsJsonArray();
+        JsonObject data = main.get(RESPONSE_DATA_KEY).getAsJsonObject();
+        JsonArray results = data.get(RESULTS_KEY).getAsJsonArray();
 
         ArrayList<String> payloadResults = new ArrayList<>();
 
         for (JsonElement result : results) {
-            payloadResults.add(result.getAsJsonObject().get("tbUrl").getAsString());
+            payloadResults.add(result.getAsJsonObject().get(THUMB_KEY).getAsString());
         }
 
         return new GoogleImagesResponse(payloadResults);
