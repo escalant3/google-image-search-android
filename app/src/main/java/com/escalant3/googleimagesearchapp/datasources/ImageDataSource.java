@@ -9,19 +9,17 @@ import android.widget.Toast;
 import com.escalant3.googleimagesearchapp.R;
 import com.escalant3.googleimagesearchapp.adapters.ImagesArrayAdapter;
 import com.escalant3.googleimagesearchapp.contentproviders.GoogleImagesSearchProvider;
-import com.escalant3.googleimagesearchapp.deserializers.GoogleImagesDeserializer;
+import com.escalant3.googleimagesearchapp.models.GoogleImage;
 import com.escalant3.googleimagesearchapp.models.GoogleImagesResponse;
 import com.escalant3.googleimagesearchapp.services.GoogleImageSearchService;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import retrofit.converter.GsonConverter;
 
 public class ImageDataSource {
 
@@ -40,7 +38,7 @@ public class ImageDataSource {
     private String query;
 
     private Context context;
-    private ArrayList<String> items;
+    private List<GoogleImage> items;
     private ImagesArrayAdapter adapter;
     private GoogleImageSearchService service;
 
@@ -65,7 +63,7 @@ public class ImageDataSource {
         return query;
     }
 
-    public ArrayList<String> getItems() {
+    public List<GoogleImage> getItems() {
         return items;
     }
 
@@ -86,7 +84,7 @@ public class ImageDataSource {
         adapter.notifyDataSetChanged();
     }
 
-    public void loadWithPreloadedData(final String query, ArrayList<String> initialItems) {
+    public void loadWithPreloadedData(final String query, List<GoogleImage> initialItems) {
         this.items.clear();
         this.query = query;
 
@@ -95,9 +93,9 @@ public class ImageDataSource {
         adapter.notifyDataSetChanged();
     }
 
-    private void addItems(ArrayList<String> newItems) {
-        for (String imageUrl: newItems) {
-            this.items.add(imageUrl);
+    private void addItems(List<GoogleImage> newItems) {
+        for (GoogleImage image: newItems) {
+            this.items.add(image);
             counter++;
         }
     }
@@ -135,13 +133,8 @@ public class ImageDataSource {
     }
 
     private GoogleImageSearchService getGoogleImageSearchService() {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(GoogleImagesResponse.class, new GoogleImagesDeserializer())
-                .create();
-
         RestAdapter retrofit = new RestAdapter.Builder()
                 .setEndpoint(context.getString(R.string.google_images_endpoint))
-                .setConverter(new GsonConverter(gson))
                 .build();
 
         return retrofit.create(GoogleImageSearchService.class);

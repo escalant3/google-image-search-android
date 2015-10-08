@@ -3,14 +3,17 @@ package com.escalant3.googleimagesearchapp;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.GridView;
 
 import com.escalant3.googleimagesearchapp.datasources.ImageDataSource;
+import com.escalant3.googleimagesearchapp.models.GoogleImage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ResultsActivity extends AppCompatActivity {
 
@@ -19,7 +22,7 @@ public class ResultsActivity extends AppCompatActivity {
 
     private ImageDataSource dataSource;
 
-    private static final String RESULTS_STRING_ARRAY_KEY = "results_array";
+    private static final String RESULTS_PARCELABLE_ARRAY_KEY = "results_array";
     private static final String QUERY_STRING_KEY = "query";
 
 
@@ -74,7 +77,8 @@ public class ResultsActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putStringArrayList(RESULTS_STRING_ARRAY_KEY, dataSource.getItems());
+        ArrayList<? extends Parcelable> items = (ArrayList<? extends Parcelable>) dataSource.getItems();
+        savedInstanceState.putParcelableArrayList(RESULTS_PARCELABLE_ARRAY_KEY, items);
         savedInstanceState.putString(QUERY_STRING_KEY, dataSource.getQuery());
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -82,7 +86,7 @@ public class ResultsActivity extends AppCompatActivity {
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        ArrayList<String> items = savedInstanceState.getStringArrayList(RESULTS_STRING_ARRAY_KEY);
+        List<GoogleImage> items = savedInstanceState.getParcelableArrayList(RESULTS_PARCELABLE_ARRAY_KEY);
         String query = savedInstanceState.getString(QUERY_STRING_KEY);
         dataSource.loadWithPreloadedData(query, items);
     }

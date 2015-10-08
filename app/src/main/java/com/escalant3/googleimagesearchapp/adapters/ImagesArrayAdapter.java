@@ -9,23 +9,24 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.escalant3.googleimagesearchapp.R;
+import com.escalant3.googleimagesearchapp.models.GoogleImage;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public abstract class ImagesArrayAdapter extends ArrayAdapter<String> {
+public abstract class ImagesArrayAdapter extends ArrayAdapter<GoogleImage> {
 
     private static class ViewHolder {
         ImageView imageView;
     }
 
-    public ImagesArrayAdapter(Context context, List<String> items) {
+    public ImagesArrayAdapter(Context context, List<GoogleImage> items) {
         super(context, 0, items);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
-        String item = getItem(position);
+        GoogleImage item = getItem(position);
         ViewHolder viewHolder;
 
         if (position == getCount() - 1) {
@@ -51,7 +52,7 @@ public abstract class ImagesArrayAdapter extends ArrayAdapter<String> {
         viewHolder.imageView.setImageBitmap(null);
 
         Picasso.with(viewHolder.imageView.getContext())
-                .load(item)
+                .load(item.getThumb())
                 .fit()
                 .placeholder(R.drawable.ic_loading)
                 .into(viewHolder.imageView);

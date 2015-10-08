@@ -1,17 +1,17 @@
 package com.escalant3.googleimagesearchapp.models;
 
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class GoogleImagesResponse {
 
-    private ArrayList<String> results;
+    private GoogleImagesResponseData responseData;
 
-    public GoogleImagesResponse(ArrayList<String> results) {
-        this.results = results;
+    public List<GoogleImage> getResults() {
+        return responseData.results;
     }
 
-    public ArrayList<String> getResults() {
-        return results;
+    private class GoogleImagesResponseData {
+        List<GoogleImage> results;
     }
 }
